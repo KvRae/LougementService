@@ -60,21 +60,28 @@ public class GestionRendezVous {
 
 
     @PUT
-    @Consumes("application/xml")
+    @Consumes("application/json")
     @Produces("text/plain")
-    public Response updateRV(RendezVous rv) {
-        int index= this.getIndexById(rv.getId());
-        if (index!=-1) {
-            listRV.set(index, rv);
-            return Response.status(Response.Status.OK).entity("update successful").build();
+    @Path("edit/{id}")
+    public Response updateRV(@PathParam(value = "id") int id, RendezVous rv) {
+        for (RendezVous info:listRV) {
+            if(info.getId()==id) {
+                info.setDate(rv.getDate());
+                info.setHeure(rv.getHeure());
+                info.setLogement(rv.getLogement());
+                info.setNumTel(rv.getNumTel());
+                return  Response.status(Response.Status.FOUND)
+                        .entity("Update Successful")
+                        .build();
 
+            }
         }
-        return Response.status(Response.Status.NOT_FOUND).entity("update unsuccessful").build();
+        return  Response.status(Response.Status.NOT_FOUND).build();}
 
-    }
+
 
     @DELETE
-    @Path("{id}")
+    @Path("delete/{id}")
     @Produces("text/plain")
     public boolean deleteRV(@PathParam(value = "id") int id){
         int index= getIndexById(id);
